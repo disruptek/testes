@@ -806,11 +806,14 @@ when isMainModule:
 
   proc hints(p: Profile; ci: bool): string =
     ## compute --hint(s) as appropriate
-    var omit = @["Cc", "Link", "Conf", "Processing", "Exec"]
+    var omit = @["Cc", "Link", "Conf", "Processing", "Exec",
+                 "XDeclaredButNotUsed"]
     if ci or p.opt notin {release, danger}:
       omit.add "Performance"
     for hint in omit.items:
       result.add " --hint[$#]=off" % [ hint ]
+    for warn in ["UnreachableCode"]:
+      result.add " --warning[$#]=off" % [ warn ]
 
   let ci = getEnv("GITHUB_ACTIONS", "false") == "true"
   var matrix: Matrix
